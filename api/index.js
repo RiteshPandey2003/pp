@@ -12,6 +12,7 @@ import swaggerDocument from '../swagger-output.json' assert { type: 'json' };;
 
 dotenv.config();
 
+const Port = process.env.PORT || 3000;
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
@@ -30,7 +31,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(3000, () => {
+app.listen(Port, () => {
   console.log('Server is running on port 3000!');
 });
 

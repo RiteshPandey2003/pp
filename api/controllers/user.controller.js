@@ -12,9 +12,10 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new ApiError(
+    res.json(
       500,
-      "Something went wrong while generating referesh and access token"
+     { message:
+      "Something went wrong while generating referesh and access token"}
     );
   }
 };
@@ -23,13 +24,13 @@ const Signup = async(req, res) => {
   const { Name, email, password } = req.body;
 
   if ([Name, email, password].some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "All fields are required");
+    res.json(400,{message: "All fields are required"});
   }
 
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists");
+    res.json(409,{message: "User with email or username already exists"});
   }
   const user = await User.create({
     Name,

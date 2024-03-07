@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
+import productRoute from './routes/product.route.js'
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
@@ -29,7 +30,7 @@ app.listen(Port, () => {
 });
 
 app.use('/api/user', userRoutes);
-
+app.use('/api/product', productRoute);
 
 
 app.use(express.static(path.join(__dirname, '/client/dist')));

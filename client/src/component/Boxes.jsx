@@ -1,50 +1,61 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
+import { useGetcategoryQuery } from "../redux/api";
 
 const Boxes = () => {
+  const { data, isLoading, isError } = useGetcategoryQuery();
   const containerRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const scrollLeft = () => {
+  useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft -= 400; // Adjust the value based on your box width
+      containerRef.current.scrollLeft = scrollPosition;
+    }
+  }, [scrollPosition]);
+
+  const handleScroll = (direction) => {
+    const scrollIncrement = 200; 
+    if (containerRef.current) {
+      setScrollPosition((prevPosition) => {
+        if (direction === "prev") {
+          return Math.max(prevPosition - scrollIncrement, 0);
+        } else if (direction === "next") {
+          return prevPosition + scrollIncrement;
+        }
+        return prevPosition;
+      });
     }
   };
 
-  const scrollRight = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft += 400; // Adjust the value based on your box width
-    }
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading category data</div>;
+  }
+
+  if (!Array.isArray(data?.data) || data.data.length === 0) {
+    return <div>No category data available</div>;
+  }
 
   return (
-    <div className='relative'>
-      <div className='flex p-4 overflow-x-scroll' style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} ref={containerRef}>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}1
-        </div>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}2
-        </div>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}3
-        </div>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}4
-        </div>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}5
-        </div>
-        <div className='bg-purple-200 p-4 rounded-lg shadow-lg mr-4' style={{ minWidth: '400px' }}>
-          {/* Content for Box 1 */}6
-        </div>
+    <div className="relative">
+      <div className="flex p-4 overflow-x-scroll" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }} ref={containerRef}>
+        {data.data.map((category) => (
+          <div key={category._id} className="bg-purple-200 p-2 rounded-lg shadow-lg mr-2" style={{ minWidth: "200px" }}>
+            <p className="font-bold">{category._id}</p>
+            <p>{category.totalStock}</p>
+          </div>
+        ))}
       </div>
-      <button className='absolute top-1/2 transform -translate-y-1/2 left-2' onClick={scrollLeft}>
+      <button className="p-1 bg-purple-600 text-white m-1 w-20" onClick={() => handleScroll("prev")}>
         Prev
       </button>
-      <button className='absolute top-1/2 transform -translate-y-1/2 right-2' onClick={scrollRight}>
+      <button className="p-1 bg-purple-600 text-white m-1 w-20" onClick={() => handleScroll("next")}>
         Next
       </button>
     </div>
   );
-}
+};
 
 export default Boxes;

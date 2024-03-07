@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import Boxes from '../component/Boxes';
+import MainHomeBoxes from '../component/MainHomeBoxes';
 
 const Home = () => {
   return (

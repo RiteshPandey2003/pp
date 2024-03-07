@@ -1,4 +1,3 @@
-// Signup.js
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -39,7 +38,7 @@ export default function Signup() {
       setLoading(false);
 
       if (res.ok) {
-        navigate('/sign-up');
+        navigate('/');
       }
     } catch (error) {
       setErrorMessage(error.message);

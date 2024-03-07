@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -11,11 +12,13 @@ const generateAccessAndRefereshTokens = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong while generating refresh and access token" });
+    return res.status(500).json({
+      message: "Something went wrong while generating refresh and access token",
+    });
   }
 };
 
-const Signup = async (req, res) => {
+const Signup = asyncHandler(async (req, res) => {
   const { Name, email, password } = req.body;
 
   if ([Name, email, password].some((field) => field?.trim() === "")) {
@@ -25,7 +28,9 @@ const Signup = async (req, res) => {
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
-    return res.status(409).json({ message: "User with email or username already exists" });
+    return res
+      .status(409)
+      .json({ message: "User with email or username already exists" });
   }
 
   const user = await User.create({
@@ -34,16 +39,19 @@ const Signup = async (req, res) => {
     password,
   });
 
-  const createdUser = await User.findById(user._id).select("-password -refreshToken");
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
   if (!createdUser) {
-    return res.status(400).json({ message: "Something went wrong during registration" });
+    return res
+      .status(400)
+      .json({ message: "Something went wrong during registration" });
   }
 
   return res.status(201).json({ message: "User registered Successfully" });
-};
-
-const Signin = async (req, res) => {
+});
+const Signin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email) {
@@ -62,22 +70,26 @@ const Signin = async (req, res) => {
     return res.status(401).json({ message: "Invalid user credentials" });
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+    user._id
+  );
 
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
   const options = {
     httpOnly: true,
     secure: true,
   };
 
-  return res.status(200)
+  return res
+    .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json({ message: "User logged In Successfully" });
-};
-
-const logoutUser = async (req, res) => {
+});
+const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -95,12 +107,12 @@ const logoutUser = async (req, res) => {
     secure: true,
   };
 
-  return res.status(200)
+  return res
+    .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json({ message: "User logged Out" });
-};
-
+});
 const Home = (req, res) => {
   res.json({ message: "Home route" });
 };

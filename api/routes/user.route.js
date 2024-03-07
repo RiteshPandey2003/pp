@@ -1,21 +1,12 @@
-import express from 'express';
-import {
-  deleteUser,
-  getUser,
-  getUsers,
-  signout,
-  test,
-  updateUser,
-} from '../controllers/user.controller.js';
-import { verifyToken } from '../utils/verifyUser.js';
+import {Router} from "express"
+import  {Signin,Signup, logoutUser, Home} from "../controllers/user.controller.js"
+import {verifyJWT} from "../middleware/authmiddleware.js"
+const router = Router();
 
-const router = express.Router();
+router.route("/signup").post(Signup);
+router.route("/signin").post(Signin);
+router.route("/logout").post(verifyJWT,  logoutUser)
+router.route("/home").get(verifyJWT,Home);
 
-router.get('/test', test);
-router.put('/update/:userId', verifyToken, updateUser);
-router.delete('/delete/:userId', verifyToken, deleteUser);
-router.post('/signout', signout);
-router.get('/getusers', verifyToken, getUsers);
-router.get('/:userId', getUser);
 
 export default router;

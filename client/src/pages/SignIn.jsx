@@ -1,112 +1,86 @@
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
+// Signup.js
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-} from '../redux/user/userSlice';
 
-
-export default function SignIn() {
+export default function Signup() {
   const [formData, setFormData] = useState({});
-  const { loading, error: errorMessage } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      return dispatch(signInFailure('Please fill all the fields'));
+
+    if (!formData.Name || !formData.email || !formData.password) {
+      return setErrorMessage('Please fill out all fields.');
     }
+
     try {
-      dispatch(signInStart());
+      setLoading(true);
+      setErrorMessage(null);
+
       const res = await fetch('/api/user/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
       if (data.success === false) {
-        dispatch(signInFailure(data.message));
+        return setErrorMessage(data.message);
       }
+
+      setLoading(false);
 
       if (res.ok) {
-        dispatch(signInSuccess(data));
-        navigate('/');
+        navigate('/sign-up');
       }
     } catch (error) {
-      dispatch(signInFailure(error.message));
+      setErrorMessage(error.message);
+      setLoading(false);
     }
   };
-  return (
-    <div className='min-h-screen mt-20'>
-      <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
-        {/* left */}
-        <div className='flex-1'>
-          <Link to='/' className='font-bold dark:text-white text-4xl'>
-            <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>
-              WM
-            </span>
-            Place
-          </Link>
-          <p className='text-sm mt-5'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod omnis autem exercitationem.
-          </p>
-        </div>
-        {/* right */}
 
-        <div className='flex-1'>
-          <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-            <div>
-              <Label value='Your email' />
-              <TextInput
-                type='email'
-                placeholder='name@company.com'
-                id='email'
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Label value='Your password' />
-              <TextInput
-                type='password'
-                placeholder='**********'
-                id='password'
-                onChange={handleChange}
-              />
-            </div>
-            <Button
-              gradientDuoTone='purpleToPink'
-              type='submit'
-              disabled={loading}
-              className='bg-blue-800'
-            >
-              {loading ? (
-                <>
-                  <Spinner size='sm' />
-                  <span className='pl-3'>Loading...</span>
-                </>
-              ) : (
-                'Sign In'
-              )}
-            </Button>
-          </form>
-          <div className='flex gap-2 text-sm mt-5'>
-            <span>Dont Have an account?</span>
-            <Link to='/sign-up' className='text-blue-500'>
-              Sign Up
-            </Link>
-          </div>
-          {errorMessage && (
-            <Alert className='mt-5' color='failure'>
-              {errorMessage}
-            </Alert>
-          )}
+  return (
+    <div className="min-h-screen flex items-center justify-center ">
+      <div className="bg-white p-6 rounded shadow-md max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Sign in</h2>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Your Email"
+            id="email"
+            onChange={handleChange}
+            className="py-2 px-4 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+          />
+          <input
+            type="password"
+            placeholder="Your Password"
+            id="password"
+            onChange={handleChange}
+            className="py-2 px-4 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="py-2 px-6 bg-blue-800 text-white rounded hover:bg-blue-700 focus:outline-none"
+          >
+            {loading ? 'Loading...' : 'Sign in'}
+          </button>
+        </form>
+        <div className="flex items-center mt-5 text-sm">
+          <span className="text-gray-600">Already have an account?</span>
+          <Link to="/sign-up" className="text-blue-500 ml-2">Sign up</Link>
         </div>
+        {errorMessage && (
+          <div className="mt-5 text-red-500">{errorMessage}</div>
+        )}
       </div>
     </div>
   );

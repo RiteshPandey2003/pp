@@ -1,7 +1,8 @@
 import React from 'react';
 import './Home.css';
 import Boxes from '../component/Boxes';
-import MainHomeBoxes from '../component/MainHomeBoxes';
+import Boxes1 from '../component/Boxes1';
+
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       </div>
     </div>
     <Boxes/>
+    <Boxes1/>
     </>
   );
 }

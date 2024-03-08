@@ -47,7 +47,7 @@ const ProductPage = () => {
             <p>Category: {product.category}</p>
             <p>Price: ${product.price}</p>
             <p>Discount Price: ${product.discountPrice}</p>
-            <img src={`http://localhost:8001/${product.photo.replace(/\\/g, "/")}`} alt={product.name} style={{ maxWidth: '200px' }} />
+            <img src={`https://pp-6s4b.onrender.com/${product.photo.replace(/\\/g, "/")}`} alt={product.name} style={{ maxWidth: '200px' }} />
           </div>
         ))}
       </div>

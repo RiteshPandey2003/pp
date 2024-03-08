@@ -10,15 +10,15 @@ const schema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter Photo"],
     },
-    discountPrice: {
+    discountPrice:{
       type: Number,
       required: [true, "Please enter Price"],
     },
-    originalPrice: {
+    originalPrice:{
       type: Number,
       required: [true, "Please enter Price"],
     },
-    discountPercentage: {
+    discountPercentage:{
       type: Number,
     },
     stock: {
@@ -36,4 +36,6 @@ const schema = new mongoose.Schema(
   }
 );
 
+
 export const Product = mongoose.model("Product", schema);
+export default Product;

@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
-import productRoute from './routes/product.route.js'
+import productRoutes from "./routes/product.route.js"
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
@@ -24,15 +24,13 @@ const __dirname = path.resolve();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-
 app.listen(Port, () => {
   console.log('Server is running on port ',Port);
 });
 
 app.use('/api/user', userRoutes);
-app.use('/api/product', productRoute);
-
-
+app.use('/api/product', productRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
 app.get('*', (req, res) => {

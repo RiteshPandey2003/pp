@@ -8,27 +8,10 @@ export const signinApi = createApi({
   }),
   endpoints: (builder) => ({
     getposts: builder.query({
-      query: () => "product/allproduct",
-    }),
-    GetProductById: builder.query({
-      query: (id) => `product/${id}`,
+      query: () => "product/getproduct",
     }),
     getcategory: builder.query({
       query: () => "product/getcategory",
-    }),
-    getProductsByCategory: builder.query({
-      query: (category) => `product/category/${category}`,
-    }),
-    addToCart: builder.mutation({
-      query: ({ productId, quantity }) => ({
-        url: "addCart/cart",
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: { productId, quantity },
-      }),
     }),
   }),
 });
@@ -36,7 +19,4 @@ export const signinApi = createApi({
 export const {
   useGetpostsQuery,
   useGetcategoryQuery,
-  useGetProductsByCategoryQuery,
-  useGetProductByIdQuery,
-  useAddToCartMutation,
 } = signinApi;

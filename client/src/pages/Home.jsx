@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.css';
 import Boxes from '../component/Boxes';
-import Boxes1 from '../component/Boxes1';
+import ProductPage from '../component/ProductPage';
 
 
 const Home = () => {
@@ -14,7 +14,7 @@ const Home = () => {
       </div>
     </div>
     <Boxes/>
-    <Boxes1/>
+    <ProductPage/>
     </>
   );
 }
